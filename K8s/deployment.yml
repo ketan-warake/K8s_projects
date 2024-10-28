@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: hacker-company
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-application
+  namespace: hacker-company
+  labels:
+    app: web-application
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web-application
+  template:
+    metadata:
+      labels:
+        app: web-application
+    spec:
+      containers:
+      - name: web-application-pod
+        image: redis:buster
+        ports:
+        - containerPort: 6379

@@ -1,0 +1,41 @@
+#!/bin/bash
+# odd number print
+for i in {1..99}
+do
+    if ((i % 2 == 1))
+    then 
+        echo $i
+    fi
+done
+
+# take input from user
+read name
+
+echo "Welcome $name"
+
+# arithmatic operations
+
+read X
+read Y
+echo $((X+Y))
+echo $((X-Y))
+echo $((X*Y)) # multiplication
+echo $((X/Y)) # division
+echo $((X**Y)) # X raise to 2
+echo $((X%Y)) #module remianer
+
+# if elif else
+if [ $option="1" ]
+then
+    echo "1"
+elif [ $option="2" ]
+then
+    echo "2"
+    exit 0
+elif [ $option="3" ]
+then
+    echo "3"
+    exit 0
+else
+    echo "Please try again from given options only."
+fi

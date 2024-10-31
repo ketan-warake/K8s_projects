@@ -1,0 +1,42 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: test-network-policy 
+  namespace: default # in whcih NS you want this policy to be craeted
+spec:
+  podSelector:
+    matchLabels:  # which pods should get bind with these network policy resoiuse ex. DB pods
+      role: db  # An empty podSelector selects all pods in the namespace.
+  policyTypes: # If no policyTypes are specified on a NetworkPolicy then by default Ingress will always be set and Egress will be set if the NetworkPolicy has any egress rules.
+  - Ingress # inconing traffic rules --> who can reach your DB PODS
+  - Egress  # outgoing traffice rules --> whom can your DB pods reach
+  ingress:
+  - from: # three types of network policy rules
+    - ipBlock:  # 1. which CIDR range is restricted from reaching your secured PODs
+        cidr: 172.17.0.0/16
+        except:
+        - 172.17.1.0/24
+    - namespaceSelector: 
+        matchLabels:
+          project: myproject
+    - podSelector:
+        matchLabels:
+          role: frontend
+    ports:
+    - protocol: TCP
+      port: 6379
+  egress:
+  - to:
+    - ipBlock:
+        cidr: 10.0.0.0/24
+    ports:
+    - protocol: TCP
+      port: 5978
+
+# isolates role=db pods in the default namespace for both ingress and egress traffic (if they weren't already isolated)
+
+# (Ingress rules) allows connections to all pods in the default namespace with the label role=db on TCP port 6379 from:
+    # any pod in the default namespace with the label role=frontend
+    # any pod in a namespace with the label project=myproject
+    # IP addresses in the ranges 172.17.0.0–172.17.0.255 and 172.17.2.0–172.17.255.255 (ie, all of 172.17.0.0/16 except 172.17.1.0/24)
+# (Egress rules) allows connections from any pod in the default namespace with the label role=db to CIDR 10.0.0.0/24 on TCP port 5978

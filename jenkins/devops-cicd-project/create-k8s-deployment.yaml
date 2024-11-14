@@ -1,0 +1,22 @@
+#Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dpt-deploy
+  labels:
+    app: dpt-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: dpt-app
+  template:
+    metadata:
+      labels:
+        app: dpt-app
+    spec:
+      containers:
+      - name: dpt-container
+        image: dptdockertest/dpt:1.0
+        ports:
+        - containerPort: 8080
